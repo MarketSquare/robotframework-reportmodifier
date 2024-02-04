@@ -1,0 +1,19 @@
+keyword_name_as_structure:
+ - Keyword Zum Zusammenklappen
+keywords:
+ - Capture Page Screenshot
+ - SeleniumLibrary.Take Screenshot[1]
+ - name: Log
+   lib: BuiltIn
+   index: 
+   - 1
+   - 2
+   path: BuiltIn.Log
+ - BuiltIn.Log [1]
+messages:
+ - .* Jobid is .*
+ - "Job .* with job id .* has sucessfully ended: MAXCC=.*"
+ - text: Relevanter Text
+keyword_name_as_info:
+ - Keyword Name As Info
+ - Second Keyword As Info

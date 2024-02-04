@@ -1,0 +1,5 @@
+keywords:
+  - name: Log
+    set: True
+  - name: Compare Images
+    set: True
