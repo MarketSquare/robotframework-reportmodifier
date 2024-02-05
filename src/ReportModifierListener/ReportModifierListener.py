@@ -8,7 +8,7 @@ from robot.api.deco import not_keyword
 from reportmodifier.ReportModifier import ReportModifier
 
 
-class JiraTestreportSplitter:
+class ReportModifierListener:
     """ Listener der verwendet werden kann, um Ergebnise nach Jira zu übertragen. 
     Voraussetzung: Der Robot-Testfallname entspricht dem Jira-Key.
     """

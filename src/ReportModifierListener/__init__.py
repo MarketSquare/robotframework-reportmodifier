@@ -1,1 +1,1 @@
-from ReportModifierListener import ReportModifierListener  # noqa: F401
+from .ReportModifierListener import ReportModifierListener  # noqa: F401
