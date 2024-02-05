@@ -1,11 +1,5 @@
-// {
-//     "python.analysis.extraPaths": [
-//         "./src",
-//     ],
-//     "robotcode.robot.pythonPath": [
-//         "./src"
-//     ],
-//     "python.testing.pytestEnabled": false,
-//     "python.testing.unittestEnabled": true,
-//     "terminal.integrated.env.windows": {"PYTHONPATH": "${workspaceFolder}/src"},
-// }
+{
+"robotcode.robot.args": [        
+    "--listener", "ReportModifierListener",
+    ]
+}
