@@ -17,13 +17,7 @@ class ReportModifierListener:
 
     def __init__(self) -> None:
         self.ROBOT_LIBRARY_LISTENER = self
-        self._jira_testcases: Dict[str,
-                                   robot.result.TestCase] = defaultdict(list)
         self._output_file: Optional[str] = None
-
-    @not_keyword
-    def end_test(self, test: robot.running.TestCase, result: robot.result.TestCase) -> None:
-        self._jira_testcases[test.name].append(result)
 
     @not_keyword
     def output_file(self, path: str) -> None:
@@ -33,4 +27,4 @@ class ReportModifierListener:
         ReportModifier(
               self._output_file,
               self._output_file.parent
-        )
+        ).write_report()

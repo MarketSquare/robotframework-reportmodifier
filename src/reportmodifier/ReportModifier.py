@@ -23,7 +23,7 @@ class ReportModifier:
         self._modifier.report_name = report_name
         self._execution_result = ExecutionResult(self._basis_output_xml)
 
-    def create_report(self):
+    def write_report(self):
         """Creates an additional log filtering the content based on yaml-configurations
 
         The yaml-configuration needs to be set as test tag. It's possible to define a standard configuration, 
