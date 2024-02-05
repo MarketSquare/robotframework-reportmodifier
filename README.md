@@ -35,6 +35,7 @@ The YAML-configuration supports the following options:
  - keyword_as_structure
 
 *Option "keywords"*
+
 Filtering based on the keyword names or paths.
 
 The keyword configuration can be used to store the name of a keyword, part of the call path of a keyword or the complete call path of a keyword. Different keywords can be defined in additional lines, e.g.:
@@ -45,6 +46,7 @@ keywords:
 ```
 
 *Option "messages"*
+
 Filtering based on message content.
 
 The message configuration collects logs that contain a specific text or correspond to a specific regular expression. It means, the message is valid as soos as defined text is found in the message or the regular expression has any foundings. For the definition of the RegEx pattern, we recommend an online test, e.g. on regex.com. Characters such as $ must be escaped with a backslash (\).
@@ -57,6 +59,7 @@ messages:
 ```
 
 *Option "ignored_messages"*
+
 Removal of unwanted content that was taken along by previous configuration, e.g.:
 
 message 1 = "Starting test case with a custom log."
@@ -72,6 +75,7 @@ ignored_messages:
 ```
 
 *Option "keyword_name_as_info"*
+
 To make the test procedure easier to read, it can be helpful to list the names of certain keywords, including the documentation, as information. These are automatically highlighted in colour. The configuration is as follows:
 ```shell
 keyword_name_as_info:
@@ -79,6 +83,7 @@ keyword_name_as_info:
 ```
 
 *Option "keyword_as_structure"*
+
 Another option for improving the readability of the report is to specify the keyword structure. This means that it is possible to include keywords as such in the modified report and place them at the top level of the report - directly below the test case. The structure specification requires that content is found via "messages" or "keywords" that are found in these keywords.
 ```shell
 keyword_as_structure:
