@@ -7,8 +7,8 @@ from robot.model import TestSuite
 from robot.reporting import ResultWriter
 from robot.result import Keyword, ResultVisitor, TestCase, ExecutionResult, Message
 
-from .file_tools import get_files_in_folder
-from .report_configuration import ReportConfiguration
+from ._file_tools import get_files_in_folder
+from ._report_configuration import ReportConfiguration
 
 
 class ReportModifier(ResultVisitor):

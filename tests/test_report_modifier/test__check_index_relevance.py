@@ -1,6 +1,6 @@
 import unittest
 from unittest import mock
-from reportmodifier.ReportModifier import _check_index_relevance
+from src.reportmodifier.ReportModifier import _check_index_relevance
 
 
 class TestCheckIndexRelevance(unittest.TestCase):

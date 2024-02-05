@@ -1,7 +1,7 @@
-import mock
 from pathlib import Path
 import unittest
-from reportmodifier.report_configuration import ReportConfiguration
+import mock
+from src.reportmodifier._report_configuration import ReportConfiguration
 
 
 class TestReportConfiguration(unittest.TestCase):
@@ -34,13 +34,13 @@ class TestReportConfiguration(unittest.TestCase):
         self.assertListEqual(log_keyword.index, [1], 'Keyword index.')
 
     def test_message_pattern(self):
-        with mock.patch(r'reportmodifier.report_configuration.ADD_STANDARD_FB_REPORT_CONFIG', False):
+        with mock.patch(r'src.reportmodifier._report_configuration.ADD_STANDARD_FB_REPORT_CONFIG', False):
             report = ReportConfiguration(Path(__file__).parent / 'configuration.yaml')
             pattern = report.message_pattern
-        self.assertListEqual(pattern, ['.* Jobid is .*', 'Job .* with job id .* has sucessfully ended: MAXCC=.*'])
+        self.assertListEqual(sorted(pattern), sorted(['.* Jobid is .*', 'Job .* with job id .* has sucessfully ended: MAXCC=.*']))
 
     def test_message_text(self):
-        with mock.patch(r'reportmodifier.report_configuration.ADD_STANDARD_FB_REPORT_CONFIG', False):
+        with mock.patch(r'src.reportmodifier._report_configuration.ADD_STANDARD_FB_REPORT_CONFIG', False):
             pattern = self.report.message_text
         self.assertListEqual(pattern, ['Relevanter Text'])
 

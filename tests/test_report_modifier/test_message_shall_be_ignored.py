@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
-from reportmodifier.ReportModifier import _message_shall_be_ignored
+from src.reportmodifier.ReportModifier import _message_shall_be_ignored
 
 
 class TestMessageShallBeIgnored(unittest.TestCase):

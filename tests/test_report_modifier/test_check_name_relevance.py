@@ -1,5 +1,5 @@
 import unittest
-from reportmodifier.ReportModifier import _check_name_relevance
+from src.reportmodifier.ReportModifier import _check_name_relevance
 
 
 class TestNameRelevance(unittest.TestCase):

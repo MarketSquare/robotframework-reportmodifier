@@ -105,6 +105,8 @@ class KeywordConfig:
             result = self.__config.split('[')[0].strip()
             if '.' not in result:
                 return result.strip()
+            else:
+                return result.split('.')[-1]
         elif isinstance(self.__config, dict):
             return self.__config.get('name')
 
