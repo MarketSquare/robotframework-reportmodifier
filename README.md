@@ -53,7 +53,7 @@ Examples:
 ```shell
 message = "Starting test case with a custom log."
 messages:
- - text: custom    → Log is relevant because message contains the word "custom" 
+ - text: custom                → Log is relevant because message contains the word "custom" 
  - pattern: Starting .* log    → Log is relevant because regex.findall("Starting .* log", "message", regex.IGNORECASE) returns at least one hit
 ```
 
