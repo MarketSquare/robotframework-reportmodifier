@@ -6,6 +6,7 @@ from robot.api import logger
 from robot.model import TestSuite
 from robot.reporting import ResultWriter
 from robot.result import Keyword, ResultVisitor, TestCase, ExecutionResult, Message
+from typing import Union
 
 from ._file_tools import get_files_in_folder
 from ._report_configuration import ReportConfiguration
@@ -16,12 +17,21 @@ class ReportModifier(ResultVisitor):
         super().__init__()
         self.report_configuration = None
         self.standard_report_configuration = None
+        self.__report_name = None
         self.__keyword_calls = defaultdict(int)
         self._relevant_keyword_calls = list()
         self._relevant_messages = defaultdict(list)
         self._keyword = None
         self.__root = None
         self._tests = list()
+
+    @property
+    def report_name(self):
+        return self.__report_name
+
+    @report_name.setter
+    def report_name(self, name):
+        self.__report_name = name
 
     def start_suite(self, suite: TestSuite) -> bool | None:
         if self.__root is None:
@@ -42,8 +52,8 @@ class ReportModifier(ResultVisitor):
         self._relevant_keyword_calls = list()
         self.report_configuration = None
         for tag in test.tags:
-            if tag.startswith('fb_report:'):
-                report_configuration = tag.split('fb_report:')[-1].strip()
+            if tag.startswith(('fb_report:', 'report:')):
+                report_configuration = tag.split('report:')[-1].strip()
                 test_path = Path(test.source)
                 test_dir = Path(*test_path.parts[0:test_path.parts.index('tests')+1])
                 configuration_path = get_files_in_folder(
@@ -51,14 +61,16 @@ class ReportModifier(ResultVisitor):
                     condition_callback=lambda p: Path(p).stem.lower() == report_configuration.split('.yaml')[0].lower() and Path(p).suffix == '.yaml',
                     recursive=True)
                 if not configuration_path:
-                    logger.error(f'FB-Report Konfiguration "{report_configuration}" für den Testfalls {test.name} konnte nicht gefunden werden.')
+                    logger.error(f'Could not find custon log configuration "{report_configuration}" of test  {test.name}')
                     return False
                 path = list(configuration_path.values())[0]
-                logger.info(f'FB-Report configuration für den Testfall: {test.name}: {tag} {path}')
+                logger.info(f'Found log configuration of fest: {test.name}: {tag} {path}')
                 if report_configuration.lower() == 'standard':
                     self.standard_report_configuration = ReportConfiguration(path)
                 else:
                     self.report_configuration = ReportConfiguration(path)
+                    if self.__report_name is None:
+                        self.__report_name = report_configuration
                 break
     
     def end_test(self, test: TestCase):
@@ -85,8 +97,8 @@ class ReportModifier(ResultVisitor):
             if _keyword_name_for_structure_is_relevant(
                     keyword.kwname, [k.name for k in self.report_configuration.keyword_as_structure]):
                 self._keyword = keyword
-            if _keyword_name_as_info_is_relevant(keyword, 
-                                                 self.report_configuration, 
+            if _keyword_name_as_info_is_relevant(keyword,
+                                                 self.report_configuration,
                                                  self.standard_report_configuration):
                 msg = f'<b><mark style="background:powderblue">{keyword.name.strip()}</mark></b>\n{keyword.doc.strip()}'
                 message = Message(msg, level='INFO', html=True, timestamp=keyword.starttime)
@@ -207,7 +219,7 @@ def _all_keyword_messages_are_relevant(keyword, call_index, report_messages, rep
             return False
 
     return True
-    
+
 
 def _message_shall_be_ignored(message, report_configuration, standard_configuration, last_message):
     if message == last_message:  # same messages next to each other are never needed
@@ -237,19 +249,24 @@ def _message_content_is_relevant(message, report_configuration, standard_configu
     return False
 
 
-def create_fb_report(basis_output_xml, result_dir, report_name):
+def create_custom_log(basis_output_xml: Union[Path, str],
+                      result_dir: Union[Path, str],
+                      report_name: str=None) -> None:
+    """Creates an additional log filtering the content based on yaml-configurations
+
+    Args:
+        basis_output_xml (Union[Path, str]): path for the source xml file
+        result_dir (Union[Path, str]): output dir path
+        report_name (str): optionally, target report name
+    """
     modifier = ReportModifier()
+    modifier.report_name = report_name
     result = ExecutionResult(basis_output_xml)
     result.visit(modifier)
     if modifier.report_configuration is not None:
         ResultWriter(result).write_results(
             outputdir=result_dir,
-            log=f"{report_name}",
+            log=f'{modifier.report_name}.html',
             report=None,
             expandkeywords="NAME:.*"
         )
-
-
-if __name__ == '__main__':
-    test_file = r'C:\Develop\TestautomatisierungSkripte\Allgemein\results\output.xml'
-    create_fb_report(test_file, r'C:\Develop\TestautomatisierungSkripte\Allgemein\results\results', 'filtered')

@@ -34,14 +34,12 @@ class TestReportConfiguration(unittest.TestCase):
         self.assertListEqual(log_keyword.index, [1], 'Keyword index.')
 
     def test_message_pattern(self):
-        with mock.patch(r'src.reportmodifier._report_configuration.ADD_STANDARD_FB_REPORT_CONFIG', False):
-            report = ReportConfiguration(Path(__file__).parent / 'configuration.yaml')
-            pattern = report.message_pattern
+        report = ReportConfiguration(Path(__file__).parent / 'configuration.yaml')
+        pattern = report.message_pattern
         self.assertListEqual(sorted(pattern), sorted(['.* Jobid is .*', 'Job .* with job id .* has sucessfully ended: MAXCC=.*']))
 
     def test_message_text(self):
-        with mock.patch(r'src.reportmodifier._report_configuration.ADD_STANDARD_FB_REPORT_CONFIG', False):
-            pattern = self.report.message_text
+        pattern = self.report.message_text
         self.assertListEqual(pattern, ['Relevanter Text'])
 
     def test_keyword_name_as_structure(self):
