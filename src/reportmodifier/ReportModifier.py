@@ -15,7 +15,7 @@ class ReportModifier(ResultVisitor):
     def __init__(self) -> None:
         super().__init__()
         self.report_configuration = None
-        self.__report_configuration_path = None
+        self.standard_report_configuration = None
         self.__keyword_calls = defaultdict(int)
         self._relevant_keyword_calls = list()
         self._relevant_messages = defaultdict(list)
@@ -37,19 +37,10 @@ class ReportModifier(ResultVisitor):
         if suite.has_teardown:
             suite.teardown = None
 
-    def set_report_configuration(self, config_path):
-        """Possibility to set the report configuration, e.g. for unittests
-        """
-        if config_path is not None:
-            assert Path(config_path).exists(), "FB Report Pfad konnte nicht gefunden werden."
-        self.__report_configuration_path = config_path
-
     def start_test(self, test: TestCase):
         self._relevant_messages = defaultdict(list)
         self._relevant_keyword_calls = list()
         self.report_configuration = None
-        if self.__report_configuration_path:
-            self.report_configuration = ReportConfiguration(self.__report_configuration_path)
         for tag in test.tags:
             if tag.startswith('fb_report:'):
                 report_configuration = tag.split('fb_report:')[-1].strip()
@@ -64,11 +55,14 @@ class ReportModifier(ResultVisitor):
                     return False
                 path = list(configuration_path.values())[0]
                 logger.info(f'FB-Report configuration für den Testfall: {test.name}: {tag} {path}')
-                self.report_configuration = ReportConfiguration(path)
+                if report_configuration.lower() == 'standard':
+                    self.standard_report_configuration = ReportConfiguration(path)
+                else:
+                    self.report_configuration = ReportConfiguration(path)
                 break
     
     def end_test(self, test: TestCase):
-        if self.report_configuration:
+        if self.report_configuration or self.standard_report_configuration:
             test.body.clear()
             for keyword, messages in self._relevant_messages.items():
                 if keyword and messages:
@@ -85,13 +79,15 @@ class ReportModifier(ResultVisitor):
         self._tests.append(deepcopy(test))
 
     def start_keyword(self, keyword: Keyword):
-        if self.report_configuration:
+        if self.report_configuration or self.standard_report_configuration:
             logger.debug(f'Checking {keyword.kwname} --> {keyword.libname} --> {keyword.parent.name}')
             self.__keyword_calls[keyword.kwname] += 1
             if _keyword_name_for_structure_is_relevant(
                     keyword.kwname, [k.name for k in self.report_configuration.keyword_as_structure]):
                 self._keyword = keyword
-            if _keyword_name_as_info_is_relevant(keyword, self.report_configuration):
+            if _keyword_name_as_info_is_relevant(keyword, 
+                                                 self.report_configuration, 
+                                                 self.standard_report_configuration):
                 msg = f'<b><mark style="background:powderblue">{keyword.name.strip()}</mark></b>\n{keyword.doc.strip()}'
                 message = Message(msg, level='INFO', html=True, timestamp=keyword.starttime)
                 self._relevant_messages[self._keyword].append(message)
@@ -99,13 +95,17 @@ class ReportModifier(ResultVisitor):
             if _all_keyword_messages_are_relevant(keyword,
                                                   self.__keyword_calls[keyword.kwname],
                                                   self._relevant_messages[self._keyword],
-                                                  self.report_configuration):
+                                                  self.report_configuration,
+                                                  self.standard_report_configuration):
                 logger.debug(f'Found relevant keyword {keyword.kwname}')
                 last_message = _get_last_message(self._relevant_messages[self._keyword])
                 submessages = list()
                 submessages = _get_all_submessages(keyword.keywords, submessages)
                 relevant_messages = [m for m in keyword.messages + submessages if
-                                     not _message_shall_be_ignored(m.message, self.report_configuration, last_message)]
+                                     not _message_shall_be_ignored(m.message,
+                                                                   self.report_configuration,
+                                                                   self.standard_report_configuration,
+                                                                   last_message)]
                 if relevant_messages:
                     self._relevant_messages[self._keyword] += relevant_messages
                     self._relevant_keyword_calls.append(_get_keyword_call_path(keyword))
@@ -114,12 +114,15 @@ class ReportModifier(ResultVisitor):
         self._keyword = None
 
     def start_message(self, msg: Message):
-        if self.report_configuration:
+        if self.report_configuration or self.standard_report_configuration:
             last_message = _get_last_message(self._relevant_messages[self._keyword])
-            if _message_content_is_relevant(msg.message, self.report_configuration, last_message):
+            if _message_content_is_relevant(msg.message,
+                                            self.report_configuration,
+                                            self.standard_report_configuration,
+                                            last_message):
                 self._relevant_messages[self._keyword].append(msg)
                 self._relevant_keyword_calls.append(_get_keyword_call_path(msg.parent))
-        
+
     def end_message(self, msg: Message):
         pass
 
@@ -178,16 +181,16 @@ def _check_index_relevance(call_index, keywords):
     return list(filter(lambda k: k.index is None or call_index in k.index, keywords))
 
 
-def _keyword_name_as_info_is_relevant(keyword, report_configuration):
+def _keyword_name_as_info_is_relevant(keyword, report_configuration, standard_configuration):
     keyword_path = _get_keyword_call_path(keyword)
-    for name_as_info in report_configuration.names_as_info:
+    for name_as_info in report_configuration.names_as_info+standard_configuration.names_as_info:
         if keyword_path.lower().endswith(name_as_info.lower()):
             return True
     return False
 
 
-def _all_keyword_messages_are_relevant(keyword, call_index, report_messages, report_configuration):
-    same_name_keywords = _check_name_relevance(keyword.kwname, report_configuration.keywords)
+def _all_keyword_messages_are_relevant(keyword, call_index, report_messages, report_configuration, standard_configuration):
+    same_name_keywords = _check_name_relevance(keyword.kwname, report_configuration.keywords+standard_configuration.keywords)
     if not same_name_keywords:
         return False
 
@@ -202,41 +205,40 @@ def _all_keyword_messages_are_relevant(keyword, call_index, report_messages, rep
     if True in [k.set for k in same_index_keywords] and \
         keyword.messages[0].message in [m.message for m in report_messages]:
             return False
-        
+
     return True
     
 
-def _message_shall_be_ignored(message, report_configuration, last_message):
+def _message_shall_be_ignored(message, report_configuration, standard_configuration, last_message):
     if message == last_message:  # same messages next to each other are never needed
         return True
 
-    for ignored_message in report_configuration.ignored_messages:
+    for ignored_message in report_configuration.ignored_messages+standard_configuration.ignored_messages:
         if ignored_message.lower() in message.lower():
             return True
 
-    for pattern in report_configuration.ignored_message_pattern:
+    for pattern in report_configuration.ignored_message_pattern+standard_configuration.ignored_message_pattern:
         if regex.findall(pattern, message, regex.I+regex.DOTALL):
             return True
     return False
 
 
-def _message_content_is_relevant(message, report_configuration, last_message):
-    if _message_shall_be_ignored(message, report_configuration, last_message):
+def _message_content_is_relevant(message, report_configuration, standard_configuration, last_message):
+    if _message_shall_be_ignored(message, report_configuration, standard_configuration, last_message):
         return False
-    # todo check if parent keywords are relevant
-    for pattern in report_configuration.message_pattern:
+
+    for pattern in report_configuration.message_pattern+standard_configuration.message_pattern:
         if regex.findall(pattern, message, regex.I+regex.DOTALL):
             return True
-        
-    for text in report_configuration.message_text:
+
+    for text in report_configuration.message_text+standard_configuration.message_text:
         if text.lower() in message.lower():
             return True
     return False
 
 
-def create_fb_report(basis_output_xml, result_dir, report_name, configuration_path=None):
+def create_fb_report(basis_output_xml, result_dir, report_name):
     modifier = ReportModifier()
-    modifier.set_report_configuration(configuration_path)
     result = ExecutionResult(basis_output_xml)
     result.visit(modifier)
     if modifier.report_configuration is not None:

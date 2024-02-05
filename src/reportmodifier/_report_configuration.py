@@ -1,11 +1,5 @@
-import os
 from pathlib import Path
 import yaml
-
-from .standard_config import *
-
-ADD_STANDARD_FB_REPORT_CONFIG = os.getenv(
-    'ADD_STANDARD_FB_REPORT_CONFIG', 'False').lower() in ['true', 'yes', '1']
 
 
 class ReportConfiguration:
@@ -59,14 +53,12 @@ class ReportConfiguration:
 
     @property
     def message_pattern(self):
-        standard_pattern = STANDARD_PATTERN if ADD_STANDARD_FB_REPORT_CONFIG else []
-        return list(set([k.pattern for k in self._message_configs() if k.pattern is not None] + standard_pattern))
+        return list(set([k.pattern for k in self._message_configs() if k.pattern is not None]))
 
     @property
     def message_text(self):
         self.message_pattern
-        standard_text = STANDARD_TEXT if ADD_STANDARD_FB_REPORT_CONFIG else []
-        return list(set([k.text for k in self._message_configs() if k.text is not None] + standard_text))
+        return list(set([k.text for k in self._message_configs() if k.text is not None]))
 
     def _ignored_message_configs(self):
         if self.__ignored_messages is None:
