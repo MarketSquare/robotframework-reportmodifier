@@ -6,7 +6,7 @@ authors = ["Matthias Gunther <matthiasgunther@gmail.com>"]
 readme = "README.md"
 packages = [
     { include = "reportmodifier", from = "src" },
-    { include = "ReportModifierVisitor", from = "src" }
+    { include = "ReportModifierListener", from = "src" }
   ]
 
 [build-system]
