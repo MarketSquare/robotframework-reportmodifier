@@ -41,8 +41,7 @@ Filtering based on the keyword names or paths.
 The keyword configuration can be used to store the name of a keyword, part of the call path of a keyword or the complete call path of a keyword. Different keywords can be defined in additional lines, e.g.:
 ```shell
 keywords:
- - Play Backup.Log Screen → All logged contents of the keyword Play Backup.Log Screen are included, regardless of how often this call was made in the test case.
- - name: Should Be Equal As ASCII → The set setting means that only different outputs of the keyword "Should Be Equal As ASCII" are displayed in the report. Attention: Please pay attention to the spelling, the name of the keyword must follow "name:" in this case
+ - Second Level Keyword. Third Level Keyword    → All logged contents of the keyword *Second Level Keyword. Third Level Keyword* are included, regardless of how often this call was made in the test case.
 ```
 
 **Option "messages"**
@@ -79,7 +78,7 @@ ignored_messages:
 To make the test procedure easier to read, it can be helpful to list the names of certain keywords, including the documentation, as information. These are automatically highlighted in colour. The configuration is as follows:
 ```shell
 keyword_name_as_info:
- - Execute batch processing
+ - Third Level Keyword
 ```
 
 **Option "keyword_as_structure"**
@@ -87,8 +86,10 @@ keyword_name_as_info:
 Another option for improving the readability of the report is to specify the keyword structure. This means that it is possible to include keywords as such in the modified report and place them at the top level of the report - directly below the test case. The structure specification requires that content is found via "messages" or "keywords" that are found in these keywords.
 ```shell
 keyword_as_structure:
- - Execute batch processing
+ - Second Level Keyword
 ```
+
+In the tests/robot directory you can find some examples.
 
 ## Usage
 You can create a custom log calling the class ReportModifier with the parameters *basis_output_xml*, *result_dir* and *report_name*, e.g.:
