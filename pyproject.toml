@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "robotframework-reportmodifier"
-version = "0.1.0"
+version = "0.1.1"
 description = "Filter report content."
 authors = ["Matthias Gunther <matthiasgunther@gmail.com>"]
 readme = "README.md"
