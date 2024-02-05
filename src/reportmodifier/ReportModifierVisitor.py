@@ -13,8 +13,8 @@ from ._report_configuration import ReportConfiguration
 class ReportModifierVisitor(ResultVisitor):
     def __init__(self) -> None:
         super().__init__()
-        self.report_configuration = None
-        self.standard_report_configuration = None
+        self.report_configuration = ReportConfiguration(None)
+        self.standard_report_configuration = ReportConfiguration(None)
         self.__report_name = None
         self.__keyword_calls = defaultdict(int)
         self._relevant_keyword_calls = list()
@@ -50,7 +50,7 @@ class ReportModifierVisitor(ResultVisitor):
     def start_test(self, test: TestCase):
         self._relevant_messages = defaultdict(list)
         self._relevant_keyword_calls = list()
-        self.report_configuration = None
+        self.report_configuration = ReportConfiguration(None)
         for tag in test.tags:
             if tag.startswith(('fb_report:', 'report:')):
                 report_configuration = tag.split('report:')[-1].strip()
@@ -72,7 +72,7 @@ class ReportModifierVisitor(ResultVisitor):
                     if self.__report_name is None:
                         self.__report_name = report_configuration
                 break
-    
+
     def end_test(self, test: TestCase):
         if self.report_configuration or self.standard_report_configuration:
             test.body.clear()
@@ -112,7 +112,7 @@ class ReportModifierVisitor(ResultVisitor):
                 logger.debug(f'Found relevant keyword {keyword.kwname}')
                 last_message = _get_last_message(self._relevant_messages[self._keyword])
                 submessages = list()
-                submessages = _get_all_submessages(keyword.keywords, submessages)
+                submessages = _get_all_submessages(keyword.body, submessages)
                 relevant_messages = [m for m in keyword.messages + submessages if
                                      not _message_shall_be_ignored(m.message,
                                                                    self.report_configuration,
@@ -144,8 +144,8 @@ def _get_all_submessages(keywords__, submessages_):
         if not isinstance(keyword, Keyword):
             continue
         submessages_ += [l for l in keyword.messages]
-        if keyword.keywords:
-            _get_all_submessages(keyword.keywords, submessages_)
+        if keyword.body:
+            _get_all_submessages(keyword.body, submessages_)
     return submessages_
 
 

@@ -89,5 +89,11 @@ Another option for improving the readability of the report is to specify the key
 keyword_as_structure:
  - Execute batch processing
 ```
-## Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+
+## Usage
+You can create a custom log calling the class ReportModifier with the parameters *basis_output_xml*, *result_dir* and *report_name*, e.g.:
+```shell
+ReportModifier().write_report()
+```
+
+or using the listener "ReportModifierListener" which is a Listener V3. In this case, the source xml file is the current created xml file, result dir the current result dir and report name the configured tag name.
