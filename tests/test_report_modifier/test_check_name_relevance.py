@@ -1,5 +1,5 @@
 import unittest
-from src.reportmodifier.ReportModifier import _check_name_relevance
+from src.reportmodifier.ReportModifierVisitor import _check_name_relevance
 
 
 class TestNameRelevance(unittest.TestCase):
@@ -23,8 +23,8 @@ class TestNameRelevance(unittest.TestCase):
     def test_multiple_matching_keywords(self):
         result = _check_name_relevance(
             "test", [
-                Keyword("not matching"), 
-                Keyword("test"), 
+                Keyword("not matching"),
+                Keyword("test"),
                 Keyword("also not matching"),
                 Keyword("TesT"), Keyword("TEST keyword with spaces")
             ])

@@ -1,5 +1,5 @@
 import unittest
-from src.reportmodifier.ReportModifier import _keyword_name_for_structure_is_relevant
+from src.reportmodifier.ReportModifierVisitor import _keyword_name_for_structure_is_relevant
 
 
 class TestPathRelevance(unittest.TestCase):
