@@ -13,6 +13,9 @@ class ReportConfiguration:
         self.__keyword_as_structure = None
 
     def __config(self):
+        if self.__path is None:
+            self.__yaml_config = dict()
+            return self.__yaml_config
         assert Path(self.__path).exists(
         ) is True, f"Configuration path does not exist! {self.__path}"
         if self.__yaml_config is None:
