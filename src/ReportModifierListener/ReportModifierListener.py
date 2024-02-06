@@ -1,8 +1,5 @@
-from collections import defaultdict
 from pathlib import Path
-from typing import Dict, Optional
-import robot.result
-import robot.running
+from typing import Optional
 from robot.api.deco import not_keyword
 
 from reportmodifier.ReportModifier import ReportModifier

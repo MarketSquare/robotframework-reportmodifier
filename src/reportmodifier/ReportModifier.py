@@ -26,8 +26,8 @@ class ReportModifier:
     def write_report(self):
         """Creates an additional log filtering the content based on yaml-configurations
 
-        The yaml-configuration needs to be set as test tag. It's possible to define a standard configuration, 
-        therefore report:standard needs to be set as tag and standard.yaml-file must be stored in ./tests folder
+        The yaml-configuration needs to be set as test tag. It's possible to define a basic configuration, 
+        therefore "report:basic_config needs to be set as tag and basic_config.yaml-file must be stored in ./tests folder
         """
         self._execution_result.visit(self._modifier)
         if self._modifier.report_configuration is not None:
