@@ -53,7 +53,7 @@ Examples:
 ```shell
 message = "Starting test case with a custom log."
 messages:
- - text: custom    → Log is relevant because message contains the word "custom" 
+ - text: custom                → Log is relevant because message contains the word "custom" 
  - pattern: Starting .* log    → Log is relevant because regex.findall("Starting .* log", "message", regex.IGNORECASE) returns at least one hit
 ```
 
@@ -94,7 +94,7 @@ In the tests/robot directory you can find some examples.
 ## Usage
 You can create a custom log calling the class ReportModifier with the parameters *basis_output_xml*, *result_dir* and *report_name*, e.g.:
 ```shell
-ReportModifier().write_report()
+ReportModifier(basis_output_xml, result_dir, report_name).write_report()
 ```
 
 or using the listener "ReportModifierListener" which is a Listener V3. In this case, the source xml file is the current created xml file, result dir the current result dir and report name the configured tag name.
