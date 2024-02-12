@@ -1,10 +1,11 @@
 from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
+
 import regex
 from robot.api import logger
 from robot.model import TestSuite
-from robot.result import Keyword, ResultVisitor, TestCase, Message
+from robot.result import Keyword, Message, ResultVisitor, TestCase
 
 from ._file_tools import get_files_in_folder
 from ._report_configuration import ReportConfiguration

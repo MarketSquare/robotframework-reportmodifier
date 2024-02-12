@@ -1,9 +1,11 @@
 from pathlib import Path
+from typing import Dict, List, Union
+
 import yaml
 
 
 class ReportConfiguration:
-    def __init__(self, path) -> None:
+    def __init__(self, path: Union[str, Path]) -> None:
         self.__path = path
         self.__yaml_config = None
         self.__keywords = None
@@ -12,19 +14,19 @@ class ReportConfiguration:
         self.__keyword_names_as_info = None
         self.__keyword_as_structure = None
 
-    def __config(self):
+    def __config(self) -> Dict:
         if self.__path is None:
-            self.__yaml_config = dict()
+            self.__yaml_config = {}
             return self.__yaml_config
         assert Path(self.__path).exists(
         ) is True, f"Configuration path does not exist! {self.__path}"
         if self.__yaml_config is None:
             self.__yaml_config = yaml.safe_load(
-                Path(self.__path).read_text(encoding='utf-8'))
+                Path(self.__path).read_text(encoding="utf-8"))
         return self.__yaml_config
 
     @property
-    def keyword_as_structure(self):
+    def keyword_as_structure(self) -> List:
         if self.__keyword_as_structure is None:
             self.__keyword_as_structure = []
             keywords = self.__config().get('keyword_as_structure')
@@ -34,7 +36,7 @@ class ReportConfiguration:
         return self.__keyword_as_structure
 
     @property
-    def keywords(self):
+    def keywords(self) -> List:
         if self.__keywords is None:
             self.__keywords = []
             if self.__config().get('keywords') is not None:
@@ -43,10 +45,10 @@ class ReportConfiguration:
         return self.__keywords
 
     @property
-    def keyword_names(self):
+    def keyword_names(self) -> List:
         return [k.name for k in self.keywords]
 
-    def _message_configs(self):
+    def _message_configs(self) -> List:
         if self.__messages is None:
             self.__messages = list()
             if 'messages' in list(self.__config()):
@@ -55,15 +57,15 @@ class ReportConfiguration:
         return self.__messages
 
     @property
-    def message_pattern(self):
+    def message_pattern(self) -> List:
         return list(set([k.pattern for k in self._message_configs() if k.pattern is not None]))
 
     @property
-    def message_text(self):
+    def message_text(self) -> List:
         self.message_pattern
         return list(set([k.text for k in self._message_configs() if k.text is not None]))
 
-    def _ignored_message_configs(self):
+    def _ignored_message_configs(self) -> List:
         if self.__ignored_messages is None:
             self.__ignored_messages = list()
             if 'ignored_messages' in list(self.__config()):
@@ -72,16 +74,16 @@ class ReportConfiguration:
         return self.__ignored_messages
 
     @property
-    def ignored_message_pattern(self):
+    def ignored_message_pattern(self) -> List:
         return [k.pattern for k in self._ignored_message_configs() if k.pattern is not None]
 
     @property
-    def ignored_messages(self):
+    def ignored_messages(self) -> List:
         self.ignored_message_pattern
         return [c.text for c in self._ignored_message_configs() if c.text is not None]
 
     @property
-    def names_as_info(self):
+    def names_as_info(self) -> List:
         if self.__keyword_names_as_info is None:
             self.__keyword_names_as_info = list()
             if 'keyword_name_as_info' in list(self.__config()):
@@ -91,22 +93,23 @@ class ReportConfiguration:
 
 
 class KeywordConfig:
-    def __init__(self, config) -> None:
+    def __init__(self, config: Union[str, Dict]) -> None:
         self.__config = config
 
     @property
-    def name(self):
+    def name(self) -> str:
         if isinstance(self.__config, str):
-            result = self.__config.split('[')[0].strip()
-            if '.' not in result:
-                return result.strip()
+            result = self.__config.split("[")[0].strip()
+            if "." not in result:
+                result = result.strip()
             else:
-                return result.split('.')[-1]
+                result = result.split(".")[-1]
         elif isinstance(self.__config, dict):
-            return self.__config.get('name')
+            result = self.__config.get('name')
+        return result
 
     @property
-    def path(self):
+    def path(self) -> str:
         if isinstance(self.__config, dict):
             return self.__config.get('path')
         path = self.__config.split('[')[0].strip()
@@ -115,7 +118,7 @@ class KeywordConfig:
             return path
 
     @property
-    def index(self) -> list | None:
+    def index(self) -> Union[List, None]:
         if isinstance(self.__config, dict):
             i = self.__config.get('index')
             if i and not isinstance(i, list):

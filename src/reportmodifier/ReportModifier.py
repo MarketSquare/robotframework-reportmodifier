@@ -1,7 +1,9 @@
 from pathlib import Path
 from typing import Union
+
 from robot.reporting import ResultWriter
 from robot.result import ExecutionResult
+
 from .ReportModifierVisitor import ReportModifierVisitor
 
 
@@ -13,17 +15,18 @@ class ReportModifier:
             result_dir (Union[Path, str]): output dir path
             report_name (str): optionally, target report name
     """
+
     def __init__(self,
                  basis_output_xml: Union[Path, str],
                  result_dir: Union[Path, str],
-                 report_name: str=None):
+                 report_name: str):
         self._basis_output_xml = basis_output_xml
         self._result_dir = result_dir
         self._modifier = ReportModifierVisitor()
         self._modifier.report_name = report_name
         self._execution_result = ExecutionResult(self._basis_output_xml)
 
-    def write_report(self):
+    def write_report(self) -> None:
         """Creates an additional log filtering the content based on yaml-configurations
 
         The yaml-configuration needs to be set as test tag. It's possible to define a basic configuration, 

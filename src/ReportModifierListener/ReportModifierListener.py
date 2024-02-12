@@ -1,12 +1,12 @@
 from pathlib import Path
 from typing import Optional
-from robot.api.deco import not_keyword
 
 from reportmodifier.ReportModifier import ReportModifier
+from robot.api.deco import not_keyword
 
 
 class ReportModifierListener:
-    """ Listener der verwendet werden kann, um Ergebnise nach Jira zu übertragen. 
+    """ Listener der verwendet werden kann, um Ergebnise nach Jira zu übertragen.
     Voraussetzung: Der Robot-Testfallname entspricht dem Jira-Key.
     """
     ROBOT_LISTENER_API_VERSION = 3
