@@ -16,8 +16,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-robotframework = "^6.1"
-pydantic = "^1.10.4"
+robotframework = "^6"
+pydantic = "^1"
 rule-engine = "^4"
 
 [tool.poetry.group.config.dependencies]
