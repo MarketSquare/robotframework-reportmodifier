@@ -9,5 +9,13 @@
     "--cov=./",
     "-v",
     "tests/utests"
-    ]
+    ],
+    "ruff.fixAll": false,
+    "black-py.useIntegratedTerminal": false,
+    "python.analysis.extraPaths": [
+        "."
+    ],
+    "robotcode.robot.pythonPath": [
+        "."
+    ],
 }

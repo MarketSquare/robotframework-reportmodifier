@@ -1,0 +1,3 @@
+messages:
+ - status: FAIL
+ - status: SKIP

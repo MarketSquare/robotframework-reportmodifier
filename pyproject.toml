@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "robotframework-reportmodifier"
-version = "0.1.10"
+version = "0.2.0"
 description = "Filter report content."
 authors = ["Matthias Gunther <matthiasgunther@gmail.com>"]
 homepage = "https://github.com/MarketSquare/robotframework-reportmodifier"
@@ -16,9 +16,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-robotframework = ">=4.1"
+robotframework = "^6.1"
 pydantic = "^1.10.4"
-rule-engine = "^3.5.0"
+rule-engine = "^4"
 
 [tool.poetry.group.config.dependencies]
 PyYAML = "^6.0"
@@ -26,89 +26,59 @@ pathlib = "^1.0.1"
 regex = "^2023.10.3"
 
 [tool.poetry.group.dev.dependencies]
-robotframework = "^4.1"
+robotframework = "^6.1"
 ruff = "*"
 mypy = "*"
 black = "*"
-
-[tool.black]
-line-length = 120
-target-version = ['py38']
-exclude = '''
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | build
-    | dist
-    | out
-    | playground
-  )/
-)
-'''
 
 [tool.ruff]
 line-length = 120
 target-version = "py38"
 exclude = [
-  ".bzr",
-  ".direnv",
-  ".eggs",
+  ".vscode",
+  "\\.venv",
   ".git",
-  ".hg",
   ".mypy_cache",
-  ".nox",
-  ".pants.d",
   ".ruff_cache",
-  ".svn",
-  ".tox",
-  ".venv",
-  "__pypackages__",
   "_build",
   "buck-out",
   "build",
   "dist",
-  "node_modules",
-  "venv",
-  ".hatch",
+  "tasks.py"
 ]
-ignore = ["E741", "N805"]
+
+[tool.ruff.lint]  # File reference here - https://docs.astral.sh/ruff/rules/
+extend-select = ["E501"]
+ignore = ["E741", "N805", "PT009", "RET503"]
 select = [
   "E",
   "F",
   "W",
   "I",
   "N",
-  #"UP",
+  "UP",
   "YTT",
-  #"ANN",
-  #"BLE",
-  #"B",
-  #"A"
-  #"COM"
-  # "C4", # TODO enable this
+  "BLE",
+  "B",
+  "A",
+  "C4",
   "DTZ",
   "T10",
-  # "EM",
-  "ISC",
+  "EM",
   "G",
-  #"INP",
+  "INP",
   "PIE",
-  # "T20",
+  "T20",
   "PT",
   "Q",
   "RET",
-  # "SIM", # TODO enable this
-  #"TID",
-  #"TCH",
-  #"ARG",
-  #"PTH", # TODO enable this
+  "TID",
+  "TCH",
+  "ARG",
+  "PTH"
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 
 
@@ -130,7 +100,7 @@ exclude = [
   "dist",
   "out",
   "playground",
-  "scripts",
+  "scripts"
 ]
 
 [[tool.mypy.overrides]]
