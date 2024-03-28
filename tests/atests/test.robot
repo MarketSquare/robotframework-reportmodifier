@@ -1,4 +1,6 @@
-*** Settings ***
+*** Comments ***
+# ruff: noqa: 0203
+
 
 *** Test Cases ***
 My First Test Case
@@ -12,6 +14,7 @@ Second Keyword As Structure
 Third Keyword As Info
     [Tags]    report:info
     First Level Keyword
+
 
 *** Keywords ***
 First Level Keyword

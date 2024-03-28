@@ -48,13 +48,14 @@ keywords:
 
 Filtering based on message content.
 
-The message configuration collects logs that contain a specific text or correspond to a specific regular expression. It means, the message is valid as soos as defined text is found in the message or the regular expression has any foundings. For the definition of the RegEx pattern, we recommend an online test, e.g. on regex.com. Characters such as $ must be escaped with a backslash (\).
+The message configuration collects logs that contain a specific text or correspond to a specific regular expression. It means, the message is valid as soon as defined text is found in the message or the regular expression has any foundings. For the definition of the RegEx pattern, we recommend an online test, e.g. on regex.com. Characters such as $ must be escaped with a backslash (\). You can specify text, pattern of status.
 Examples: 
 ```shell
 message = "Starting test case with a custom log."
 messages:
  - text: custom                → Log is relevant because message contains the word "custom" 
  - pattern: Starting .* log    → Log is relevant because regex.findall("Starting .* log", "message", regex.IGNORECASE) returns at least one hit
+ - status: FAIL | PASS | SKIP  → Log is relevant if the message level is equal to predefined status
 ```
 
 **Option "ignored_messages"**

@@ -1,10 +1,10 @@
 import unittest
 from unittest import mock
+
 from src.reportmodifier.ReportModifierVisitor import _check_index_relevance
 
 
 class TestCheckIndexRelevance(unittest.TestCase):
-
     def setUp(self):
         self.keyword_one = mock.MagicMock()
         self.keyword_one.index = [1]
@@ -27,5 +27,5 @@ class TestCheckIndexRelevance(unittest.TestCase):
         self.assertListEqual([self.keyword_two], filtered_keywords)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

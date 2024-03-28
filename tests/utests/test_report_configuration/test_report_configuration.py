@@ -37,7 +37,8 @@ class TestReportConfiguration(unittest.TestCase):
         report = ReportConfiguration(Path(__file__).parent / "configuration.yaml")
         pattern = report.message_pattern
         self.assertListEqual(
-            sorted(pattern), sorted([".* Jobid is .*", "Job .* with job id .* has sucessfully ended: MAXCC=.*"])
+            sorted(pattern),
+            sorted([".* Jobid is .*", "Job .* with job id .* has sucessfully ended: MAXCC=.*"]),
         )
 
     def test_message_text(self) -> None:
