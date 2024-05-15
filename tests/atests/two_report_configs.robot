@@ -1,13 +1,15 @@
 *** Comments ***
 # ruff: noqa: 0203
 
+
 *** Test Cases ***
 Two Report Configurations
     [Tags]    report:additional    report:basic_config
-    Log Info   1st message
+    Log Info    1st message
     Main Module
     Main Module Checks
     Submodule
+
 
 *** Keywords ***
 Main Module

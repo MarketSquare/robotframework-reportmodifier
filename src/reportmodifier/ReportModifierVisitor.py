@@ -106,9 +106,11 @@ class ReportModifierVisitor(ResultVisitor):
                 [k.name for k in self.report_configuration.keyword_as_structure]
                 + [k.name for k in self.basic_configuration.keyword_as_structure],
             ):
-                if self._keyword_path is None or \
-                        self._keyword_path == _get_keyword_call_path(keyword) or \
-                        self._keyword_path not in _get_keyword_call_path(keyword):
+                if (
+                    self._keyword_path is None
+                    or self._keyword_path == _get_keyword_call_path(keyword)
+                    or self._keyword_path not in _get_keyword_call_path(keyword)
+                ):
                     self._keyword = keyword
                     self._keyword_path = _get_keyword_call_path(keyword)
             if _keyword_name_as_info_is_relevant(keyword, self.report_configuration, self.basic_configuration):

@@ -145,5 +145,5 @@ class ReportModifier:
                 log=f"{self._modifier.report_name}.html",
                 report=None,
                 expandkeywords="NAME:.*",
-                loglevel="TRACE:INFO"
+                loglevel="TRACE:INFO",
             )
