@@ -22,7 +22,7 @@ class ReportModifierVisitor(ResultVisitor):
         self._relevant_keyword_calls = []
         self._relevant_messages = defaultdict(list)
         self._keyword = None
-        self._keyword_path = ""
+        self._keyword_path = None
         self.__root = None
         self._tests = []
 
@@ -57,17 +57,18 @@ class ReportModifierVisitor(ResultVisitor):
         for tag in test.tags:
             if tag.startswith(("fb_report:", "report:")):
                 report_configuration = tag.split("report:")[-1].strip()
+                report_configuration = report_configuration.lower().replace(".yaml", "")
                 test_path = Path(test.source)
                 test_dir = Path(*test_path.parts[0 : test_path.parts.index("tests") + 1])
                 configuration_path = get_files_in_folder(
                     top_level_dir=test_dir,
-                    condition_callback=lambda p: Path(p).stem.lower() == report_configuration.split(".yaml")[0].lower()  # noqa: B023
+                    condition_callback=lambda p: Path(p).stem.lower() == report_configuration  # noqa: B023
                     and Path(p).suffix == ".yaml",
                     recursive=True,
                 )
                 if not configuration_path:
                     logger.error(
-                        f'Could not find custon log configuration "{report_configuration}" of test  {test.name}',
+                        f'Could not find custom log configuration "{report_configuration}" of test  {test.name}',
                     )
                     return False
                 path = list(configuration_path.values())[0]
@@ -78,7 +79,6 @@ class ReportModifierVisitor(ResultVisitor):
                     self.report_configuration = ReportConfiguration(path)
                     if self.__report_name is None:
                         self.__report_name = report_configuration
-                break
 
     def end_test(self, test: TestCase):
         if self.report_configuration or self.basic_configuration:
@@ -103,10 +103,14 @@ class ReportModifierVisitor(ResultVisitor):
             self.__keyword_calls[keyword.kwname] += 1
             if _keyword_name_for_structure_is_relevant(
                 keyword.kwname,
-                [k.name for k in self.report_configuration.keyword_as_structure],
+                [k.name for k in self.report_configuration.keyword_as_structure]
+                + [k.name for k in self.basic_configuration.keyword_as_structure],
             ):
-                self._keyword = keyword
-                self._keyword_path = _get_keyword_call_path(keyword)
+                if self._keyword_path is None or \
+                        self._keyword_path == _get_keyword_call_path(keyword) or \
+                        self._keyword_path not in _get_keyword_call_path(keyword):
+                    self._keyword = keyword
+                    self._keyword_path = _get_keyword_call_path(keyword)
             if _keyword_name_as_info_is_relevant(keyword, self.report_configuration, self.basic_configuration):
                 msg = f'<b><mark style="background:powderblue">{keyword.name.strip()}</mark></b>\n{keyword.doc.strip()}'
                 message = Message(msg, level="INFO", html=True, timestamp=keyword.starttime)

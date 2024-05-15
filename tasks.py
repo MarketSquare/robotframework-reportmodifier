@@ -8,7 +8,6 @@ from invoke import Context, task
 from src.reportmodifier import ReportModifier
 
 ROOT = pathlib.Path(__file__).parent.resolve().as_posix()
-VERSION = version("robotframework-reportmodifier")
 
 
 @task
@@ -72,11 +71,12 @@ def libdoc(context: Context) -> None:
     json_file = f"{ROOT}/src/reportmodifier/ReportModifier.py"
     source = f"ReportModifier::{json_file}"
     target = f"{ROOT}/docs/ReportModifier.html"
+    current_version = version("robotframework-reportmodifier")
     cmd = [
         "python",
         "-m",
         "robot.libdoc",
-        f"-v {VERSION}",
+        f"-v {current_version}",
         source,
         target,
     ]
@@ -124,6 +124,16 @@ def readme(context: Context) -> None:
         readme_file.write(str(doc_string).replace("\\", "\\\\").replace("\\\\*", "\\*"))
 
 
-@task(formatcode, libdoc, libspec, listenerlibdoc, readme)
+@task(formatcode, utests, readme)
 def build(context: Context) -> None:
-    subprocess.run("poetry build", shell=True, check=False)
+    subprocess.run("poetry build", shell=False, check=False)
+
+
+@task(build)
+def install(context: Context) -> None:
+    subprocess.run("poetry install", shell=False, check=False)
+
+
+@task(install, libdoc, libspec, listenerlibdoc, readme)
+def publish(context: Context) -> None:
+    subprocess.run("poetry publish -r nexus-snapshot", shell=False, check=False)

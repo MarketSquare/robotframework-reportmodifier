@@ -1,0 +1,6 @@
+keyword_as_structure:
+ - Log Another Info
+keywords:
+ - Log Info
+messages:
+ - text: "Another message:"
