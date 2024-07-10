@@ -251,7 +251,7 @@ def _all_keyword_messages_are_relevant(keyword, call_index, report_messages, rep
     if not same_index_keywords:
         return False
 
-    if True in [k.set for k in same_index_keywords] and keyword.messages[0].message in [
+    if True in [k.set for k in same_index_keywords] and keyword.message and keyword.messages[0].message in [
         m.message for m in report_messages
     ]:
         return False
