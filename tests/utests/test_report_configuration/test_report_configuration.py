@@ -45,6 +45,12 @@ class TestReportConfiguration(unittest.TestCase):
         pattern = self.report.message_text
         self.assertListEqual(pattern, ["Relevanter Text"])
 
+    def test_ignored_keywords(self) -> None:
+        self.assertListEqual(
+            self.report.ignored_keywords,
+            ["Run Keyword And Ignore Error", "Run Keyword And Return Status"],
+        )
+
     def test_keyword_name_as_structure(self) -> None:
         self.assertEqual(1, len(self.report.keyword_as_structure))  # noqa: PT009
         self.assertEqual(self.report.keyword_as_structure[0].name, "Keyword Zum Zusammenklappen")  # noqa: PT009
