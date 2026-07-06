@@ -139,7 +139,7 @@ class ReportModifier:
         basic_config.yaml-file must be stored in ./tests folder
         """
         self._execution_result.visit(self._modifier)
-        if self._modifier.report_configuration is not None:
+        if self._modifier.config_found:
             ResultWriter(self._execution_result).write_results(
                 outputdir=self._result_dir,
                 log=f"{self._modifier.report_name}.html",

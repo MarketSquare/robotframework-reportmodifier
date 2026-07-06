@@ -49,6 +49,12 @@ class TestReportConfiguration(unittest.TestCase):
         self.assertEqual(1, len(self.report.keyword_as_structure))  # noqa: PT009
         self.assertEqual(self.report.keyword_as_structure[0].name, "Keyword Zum Zusammenklappen")  # noqa: PT009
 
+    def test_bool_is_false_without_config_file(self) -> None:
+        self.assertFalse(bool(ReportConfiguration(None)))
+
+    def test_bool_is_true_with_config_file(self) -> None:
+        self.assertTrue(bool(self.report))
+
 
 if __name__ == "__main__":
     unittest.main()
