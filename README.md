@@ -3,7 +3,7 @@ The high complexity of tests and the amount of information that can be logged ma
 
 ## Configuration assignment
 
-The report is configured using YAML files. The YAML files must be saved within the /tests folder. The name of the file to be used must be stored as a "report:" tag on the test case - either as a test tag for all test cases in the file or as a tag for a specific test case. There is also the option of a base configuration for all test cases using tag "report:basic_config" with file "basic_config.yaml" withing the /test directory. Examples:
+The report is configured using YAML files. By default the YAML files are looked up within the /tests folder of the test source path. The name of the file to be used must be stored as a "report:" tag on the test case - either as a test tag for all test cases in the file or as a tag for a specific test case. There is also the option of a base configuration for all test cases using tag "report:basic_config" with file "basic_config.yaml" withing the /test directory. Examples:
 ```shell
 *** Settings ***
 
@@ -99,3 +99,18 @@ ReportModifier(basis_output_xml, result_dir, report_name).write_report()
 ```
 
 or using the listener "ReportModifierListener" which is a Listener V3. In this case, the source xml file is the current created xml file, result dir the current result dir and report name the configured tag name.
+
+## Configuration source path
+
+By default the configuration files are searched below the "tests" folder derived from the test source path. To keep the configuration generic across different test suites or repositories, the source path can be set explicitly.
+
+Using the class, pass the optional *config_dir* parameter:
+```shell
+ReportModifier(basis_output_xml, result_dir, config_dir="path/to/configs").write_report()
+```
+
+Using the listener, pass the directory as listener argument:
+```shell
+robot --listener ReportModifierListener:path/to/configs tests
+```
+If *config_dir* is omitted, the previous behaviour applies (lookup within the "tests" folder).
