@@ -117,6 +117,7 @@ class ReportModifier:
         basis_output_xml: Union[Path, str],
         result_dir: Union[Path, str],
         report_name: str = "custom_log",
+        config_dir: Union[Path, str, None] = None,
     ):
         """Creates an additional log filtering the content based on yaml-configurations
 
@@ -124,10 +125,12 @@ class ReportModifier:
             basis_output_xml (Union[Path, str]): path for the source xml file
             result_dir (Union[Path, str]): output dir path where to store the new report
             report_name (str): optionally, target report name
+            config_dir (Union[Path, str, None]): optionally, the directory to search the
+                yaml configuration files in. Defaults to the "tests" folder in the test source path.
         """
         self._basis_output_xml = basis_output_xml
         self._result_dir = result_dir
-        self._modifier = ReportModifierVisitor()
+        self._modifier = ReportModifierVisitor(config_dir)
         self._modifier.report_name = report_name
         self._execution_result = ExecutionResult(self._basis_output_xml)
 

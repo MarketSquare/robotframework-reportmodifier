@@ -13,8 +13,9 @@ from ._report_configuration import ReportConfiguration
 
 
 class ReportModifierVisitor(ResultVisitor):
-    def __init__(self) -> None:
+    def __init__(self, config_dir: str | Path | None = None) -> None:
         super().__init__()
+        self._config_dir = Path(config_dir) if config_dir else None
         self.report_configuration = ReportConfiguration(None)
         self.basic_configuration = ReportConfiguration(None)
         self.__report_name = None
@@ -58,10 +59,15 @@ class ReportModifierVisitor(ResultVisitor):
             if tag.startswith(("fb_report:", "report:")):
                 report_configuration = tag.split("report:")[-1].strip()
                 report_configuration = report_configuration.lower().replace(".yaml", "")
-                test_path = Path(test.source)
-                test_dir = Path(*test_path.parts[0 : test_path.parts.index("tests") + 1])
+                config_dir = self._config_dir or _default_config_dir(test.source)
+                if config_dir is None:
+                    logger.error(
+                        f'Could not locate a configuration directory for test {test.name}. '
+                        f'Pass config_dir or place the test below a "tests" folder.',
+                    )
+                    return False
                 configuration_path = get_files_in_folder(
-                    top_level_dir=test_dir,
+                    top_level_dir=config_dir,
                     condition_callback=lambda p: Path(p).stem.lower() == report_configuration  # noqa: B023
                     and Path(p).suffix == ".yaml",
                     recursive=True,
@@ -166,6 +172,15 @@ class ReportModifierVisitor(ResultVisitor):
 
     def end_message(self, msg: Message):
         pass
+
+
+def _default_config_dir(test_source):
+    if test_source is None:
+        return None
+    test_path = Path(test_source)
+    if "tests" not in test_path.parts:
+        return None
+    return Path(*test_path.parts[0 : test_path.parts.index("tests") + 1])
 
 
 def _get_all_submessages(keywords__, submessages_):
