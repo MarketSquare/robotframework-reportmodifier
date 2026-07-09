@@ -162,6 +162,10 @@ class ReportModifierVisitor(ResultVisitor):
     def start_message(self, msg: Message):
         if self.report_configuration or self.basic_configuration:
             last_message = _get_last_message(self._relevant_messages[self._keyword])
+            if _message_is_under_ignored_keyword(
+                msg, self.report_configuration.ignored_keywords + self.basic_configuration.ignored_keywords
+            ):
+                return
             if _message_content_is_relevant(
                 msg.message,
                 self.report_configuration,
@@ -172,6 +176,8 @@ class ReportModifierVisitor(ResultVisitor):
                 self._relevant_keyword_calls.append(_get_keyword_call_path(msg.parent))
             if _message_status_is_relevant(
                 msg.level, self.report_configuration.message_status + self.basic_configuration.message_status
+            ) and not _message_shall_be_ignored(
+                msg.message, self.report_configuration, self.basic_configuration, last_message
             ):
                 self._relevant_messages[self._keyword].append(msg)
                 self._relevant_keyword_calls.append(_get_keyword_call_path(msg.parent))
@@ -316,3 +322,10 @@ def _message_status_is_relevant(message_level: str, relevant_levels: list):
         relevant_levels (lsit): List with accepted levels
     """
     return message_level.lower() in [r.lower() for r in relevant_levels]
+
+
+def _message_is_under_ignored_keyword(msg, ignored_keywords):
+    if not ignored_keywords:
+        return False
+    keyword_path = _get_keyword_call_path(msg.parent)
+    return any(name.lower() in keyword_path.lower() for name in ignored_keywords)

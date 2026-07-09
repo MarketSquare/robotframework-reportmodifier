@@ -11,6 +11,7 @@ class ReportConfiguration:
         self.__keywords = None
         self.__messages = None
         self.__ignored_messages = None
+        self.__ignored_keywords = None
         self.__keyword_names_as_info = None
         self.__keyword_as_structure = None
 
@@ -83,6 +84,15 @@ class ReportConfiguration:
     def ignored_messages(self) -> List:
         self.ignored_message_pattern  # noqa: B018
         return [c.text for c in self._ignored_message_configs() if c.text is not None]
+
+    @property
+    def ignored_keywords(self) -> List:
+        if self.__ignored_keywords is None:
+            self.__ignored_keywords = []
+            keywords = self.__config().get("ignored_keywords")
+            if keywords is not None:
+                self.__ignored_keywords = list(keywords)
+        return self.__ignored_keywords
 
     @property
     def names_as_info(self) -> List:

@@ -17,3 +17,6 @@ messages:
 keyword_name_as_info:
  - Keyword Name As Info
  - Second Keyword As Info
+ignored_keywords:
+ - Run Keyword And Ignore Error
+ - Run Keyword And Return Status
