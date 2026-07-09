@@ -14,6 +14,9 @@ class ReportConfiguration:
         self.__keyword_names_as_info = None
         self.__keyword_as_structure = None
 
+    def __bool__(self) -> bool:
+        return self.__path is not None
+
     def __config(self) -> Dict:
         if self.__path is None:
             self.__yaml_config = {}

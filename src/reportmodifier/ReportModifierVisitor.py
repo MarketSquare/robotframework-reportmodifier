@@ -26,6 +26,11 @@ class ReportModifierVisitor(ResultVisitor):
         self._keyword_path = None
         self.__root = None
         self._tests = []
+        self._config_found = False
+
+    @property
+    def config_found(self) -> bool:
+        return self._config_found
 
     @property
     def report_name(self):
@@ -79,6 +84,7 @@ class ReportModifierVisitor(ResultVisitor):
                     return False
                 path = list(configuration_path.values())[0]
                 logger.info(f"Found log configuration of fest: {test.name}: {tag} {path}")
+                self._config_found = True
                 if report_configuration.lower() == "basic_config":
                     self.basic_configuration = ReportConfiguration(path)
                 else:
