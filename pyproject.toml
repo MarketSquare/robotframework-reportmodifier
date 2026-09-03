@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "robotframework-reportmodifier"
-version = "0.2.6"
+version = "0.3.0"
 description = "Filter report content."
 authors = ["Matthias Gunther <matthiasgunther@gmail.com>"]
 homepage = "https://github.com/MarketSquare/robotframework-reportmodifier"
