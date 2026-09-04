@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "robotframework-reportmodifier"
-version = "0.3.0"
+version = "0.3.1"
 description = "Filter report content."
 authors = ["Matthias Gunther <matthiasgunther@gmail.com>"]
 homepage = "https://github.com/MarketSquare/robotframework-reportmodifier"
@@ -15,16 +15,16 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-robotframework = "^6"
+python = ">=3.11,<4.0"
+robotframework = ">7"
 
 [tool.poetry.group.config.dependencies]
-PyYAML = "^6.0"
-pathlib = "^1.0.1"
-regex = "^2023.10.3"
+pyyaml = ">=6.0.3"
+pathlib = ">=1.0.1"
+regex = ">=2026.9.3"
 
 [tool.poetry.group.dev.dependencies]
-robotframework = "^6.1"
+robotframework = ">6"
 ruff = "*"
 mypy = "*"
 black = "*"
